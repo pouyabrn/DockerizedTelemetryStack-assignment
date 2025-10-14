@@ -1,0 +1,10 @@
+{
+  "name": "telemetry-scripts",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Test scripts for telemetry system",
+  "scripts": {
+    "test": "node test-telemetry.js"
+  }
+}
+

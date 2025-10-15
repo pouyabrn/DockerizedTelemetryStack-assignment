@@ -1,0 +1,4 @@
+run this command on a terminal in this directory
+
+
+node test-telemetry.js

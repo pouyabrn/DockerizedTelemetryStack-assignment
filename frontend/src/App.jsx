@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import axios from 'axios'
 import { VehicleCard } from './components/VehicleCard'
+import { StaticButton } from './components/StaticButton'
 import { AllCharts } from './components/AllCharts'
 import { Card, CardHeader, CardTitle, CardContent } from './components/Card'
 import { RefreshCw, Activity, Database } from 'lucide-react'
@@ -13,6 +14,16 @@ function App() {
   const [historyData, setHistoryData] = useState([])
   const [loading, setLoading] = useState(true)
   const [lastUpdate, setLastUpdate] = useState(null)
+
+  // Stable list of vehicle IDs (only updates when vehicles change count or IDs)
+  const vehicleIds = useMemo(() => {
+    return vehicles.map(v => v.vehicle_id).sort()
+  }, [vehicles.length])
+
+  // Stable click handler
+  const handleViewDetails = useCallback((vehicleId) => {
+    setSelectedVehicle(vehicleId)
+  }, [])
 
   // Handle hash changes
   useEffect(() => {
@@ -141,17 +152,22 @@ function App() {
               <p className="text-gray-400">Waiting for telemetry data...</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {vehicles.map((vehicle) => (
-                <button
-                  key={vehicle.id}
-                  onClick={() => setSelectedVehicle(vehicle.vehicle_id)}
-                  className="text-left transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 rounded-xl w-full"
-                >
-                  <VehicleCard vehicle={vehicle} />
-                </button>
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-4">
+                {vehicles.map((vehicle) => (
+                  <VehicleCard key={vehicle.id} vehicle={vehicle} />
+                ))}
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {vehicleIds.map((vehicleId) => (
+                  <StaticButton
+                    key={vehicleId}
+                    vehicleId={vehicleId}
+                    onClick={handleViewDetails}
+                  />
+                ))}
+              </div>
+            </>
           )}
         </div>
 

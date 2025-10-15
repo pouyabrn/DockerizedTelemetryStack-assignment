@@ -1,7 +1,8 @@
+import { memo } from 'react'
 import { Card, CardHeader, CardTitle, CardContent } from './Card'
 import { Gauge, MapPin, Thermometer, Fuel, Activity } from 'lucide-react'
 
-export function VehicleCard({ vehicle }) {
+export const VehicleCard = memo(function VehicleCard({ vehicle }) {
   const statusColor = {
     running: 'text-green-500',
     idle: 'text-yellow-500',
@@ -77,5 +78,15 @@ export function VehicleCard({ vehicle }) {
       </CardContent>
     </Card>
   )
-}
+}, (prevProps, nextProps) => {
+  // Custom comparison to prevent re-renders if data hasn't changed
+  return (
+    prevProps.vehicle.id === nextProps.vehicle.id &&
+    prevProps.vehicle.speed === nextProps.vehicle.speed &&
+    prevProps.vehicle.engine_rpm === nextProps.vehicle.engine_rpm &&
+    prevProps.vehicle.temperature === nextProps.vehicle.temperature &&
+    prevProps.vehicle.fuel_level === nextProps.vehicle.fuel_level &&
+    prevProps.vehicle.status === nextProps.vehicle.status
+  )
+})
 
